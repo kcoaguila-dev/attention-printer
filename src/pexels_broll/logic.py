@@ -1,27 +1,11 @@
 import os
 import requests
-from mcp.server.fastmcp import FastMCP
 
-# Create a FastMCP server instance
-mcp = FastMCP("PexelsBrollServer")
-
-@mcp.tool()
-def fetch_broll(keyword: str, output_dir: str) -> str:
+def download_pexels_broll(keyword: str, output_dir: str, api_key: str) -> str:
     """
-    Fetches B-roll footage from Pexels Video API based on a keyword.
+    Core business logic to fetch B-roll footage from Pexels Video API.
     Downloads the highest quality MP4 (landscape, HD) to the specified output directory.
-
-    Args:
-        keyword: The search keyword for the video (e.g., 'Hedge Fund', 'Hacker', 'Money').
-        output_dir: The local directory where the downloaded video will be saved.
-
-    Returns:
-        The absolute local file path of the downloaded video.
     """
-    api_key = os.environ.get("PEXELS_API_KEY")
-    if not api_key:
-        raise ValueError("PEXELS_API_KEY environment variable is not set.")
-
     # Ensure output directory exists
     os.makedirs(output_dir, exist_ok=True)
 
@@ -76,6 +60,3 @@ def fetch_broll(keyword: str, output_dir: str) -> str:
             f.write(chunk)
 
     return absolute_path
-
-if __name__ == "__main__":
-    mcp.run()
