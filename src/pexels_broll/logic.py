@@ -60,3 +60,27 @@ def download_pexels_broll(keyword: str, output_dir: str, api_key: str) -> str:
             f.write(chunk)
 
     return absolute_path
+
+def download_pexels_broll_batch(keywords: list, output_dir: str, api_key: str, max_workers: int = 5) -> dict:
+    """
+    Downloads multiple B-roll clips in parallel using ThreadPoolExecutor.
+    Returns a dict mapping each keyword to its absolute local file path.
+    """
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    results = {}
+
+    def _fetch_single(kw):
+        try:
+            return kw, download_pexels_broll(kw, output_dir, api_key)
+        except Exception as e:
+            return kw, None
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = [executor.submit(_fetch_single, kw) for kw in keywords]
+        for f in as_completed(futures):
+            kw, path = f.result()
+            if path:
+                results[kw] = path
+
+    return results

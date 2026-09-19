@@ -24,3 +24,21 @@ def register_tools(mcp):
         
         # We delegate the actual logic to our data/logic layer.
         return download_pexels_broll(keyword, output_dir, api_key)
+
+    @mcp.tool()
+    def fetch_broll_batch(keywords: list, output_dir: str) -> dict:
+        """
+        Fetches multiple B-roll clips in parallel from Pexels Video API.
+
+        Args:
+            keywords: List of search keywords (e.g. ['Hedge Fund', 'Stock Market', 'Hourglass']).
+            output_dir: The local directory where downloaded MP4s will be saved.
+
+        Returns:
+            Dict mapping each keyword to its local file path.
+        """
+        from src.pexels_broll.logic import download_pexels_broll_batch
+        api_key = os.environ.get("PEXELS_API_KEY")
+        if not api_key:
+            raise ValueError("PEXELS_API_KEY environment variable is not set.")
+        return download_pexels_broll_batch(keywords, output_dir, api_key)
