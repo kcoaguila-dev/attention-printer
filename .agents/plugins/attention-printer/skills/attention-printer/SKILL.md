@@ -22,25 +22,31 @@ Break the transcript into roughly 15-second contextual chunks.
 ## Step 3: Keyword Extraction
 For each 15-second contextual chunk, determine a highly visual search keyword that represents the content (e.g., "Hedge Fund", "Hacker", "Money").
 
-## Step 4: Fetch B-Roll
-Autonomously call the `fetch_broll` MCP tool for each keyword identified in Step 3.
-This will download the relevant stock footage from Pexels for each chunk.
+## Step 4: Screencast Punch-In Zoom Planning
+Autonomously plan 115% push-in cuts on the screencast (using `src.motion.logic.plan_screencast_punch_ins`) to eliminate static screen fatigue and emphasize key verbal points.
 
-## Step 5: Fetch Background Music
-Autonomously call the `fetch_background_music` MCP tool to download a clean acoustic or lo-fi music track suitable for the video's theme.
-Always pass `target_duration_sec` matching the screencast length so the audio is automatically trimmed with a smooth 4-second fade-out.
+## Step 5: Fetch B-Roll (Parallel)
+Autonomously call the `fetch_broll_batch` MCP tool for all keywords in parallel to download sequence-matched HD MP4 clips.
 
-## Step 6: Generate FCPXML
-Autonomously call the `build_timeline` MCP tool (or use `src.timeline.logic.build_premiere_fcpxml`) to generate a 100% Premiere Pro compliant FCPXML (`xmeml v5`) in one shot.
-The XML timeline structures:
-- **Video Track 1:** The original uploaded screencast.
-- **Video Track 2:** Downloaded Pexels clips at the exact start timestamps of their corresponding chunks, trimmed to 4 seconds, pre-scaled to sequence resolution.
+## Step 6: Generate 2D Graphic Callouts
+Autonomously call `create_graphic_callouts` (or `src.graphics.logic.generate_callouts_batch`) for abstract rules, dates, or financial thresholds to create sleek transparent PNG cards.
+
+## Step 7: Fetch Background Music & Sound Design
+1. Call `fetch_background_music` with `target_duration_sec` to download and auto-fade a clean acoustic track.
+2. Call `get_transition_sfx` to acquire/synthesize the transition whoosh SFX.
+
+## Step 8: Build Complete 6-Track Premiere Pro Timeline
+Call `build_timeline` to generate a 100% compliant Premiere Pro FCPXML (`xmeml v5`):
+- **Video Track 1:** Screencast with alternating 100%/115% punch-in cuts.
+- **Video Track 2:** Downloaded B-roll clips (trimmed to 4s, scaled to sequence frame).
+- **Video Track 3:** 2D graphic callout cards.
 - **Audio Track 1:** Original voiceover audio.
-- **Audio Track 2:** Ducked background music track (volume set to ~ -18 dB / 0.022 level), trimmed to exact video duration.
+- **Audio Track 2:** Ducked background music (-18 dB, exact duration with 4s fade).
+- **Audio Track 3:** Synchronized transition whoosh SFX (-14 dB).
 
-## Step 7: Automated QA Verification
-Verify the generated project meets professional standards:
-1. **Duration Check:** Confirm audio does not exceed screencast video duration.
-2. **Audio Levels:** Confirm background music is ducked so voiceover is intelligible.
-3. **Visual Scaling:** Confirm B-roll clips fill frame dimensions without letterboxing or extreme cropping.
-4. **Visual Mix:** Ensure dense conceptual sections feature graphic/diagram cards rather than generic B-roll.
+## Step 9: Automated QA Verification
+Verify the project meets professional broadcast standards:
+1. **Duration Check:** Audio tracks do not exceed screencast video duration.
+2. **Audio Balance:** Music is ducked at -18 dB and SFX at -14 dB so speech is crystal clear.
+3. **Visual Scaling:** All stock clips and graphic cards match the 720p/1080p sequence bounds.
+4. **Information Polish:** Complex regulatory or numeric claims have visual callout cards.

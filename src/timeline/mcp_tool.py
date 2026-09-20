@@ -16,24 +16,19 @@ def register_timeline_tools(mcp):
         height: int = 720,
         total_frames: int = None,
         broll_duration_sec: float = 4.0,
-        music_level: float = 0.022
+        music_level: float = 0.022,
+        graphic_cards: List[Dict[str, Any]] = None,
+        sfx_path: str = None,
+        punch_ins: List[Dict[str, Any]] = None
     ) -> str:
         """
-        Builds a complete, 100% compliant Adobe Premiere Pro FCPXML timeline in one shot.
-        Automatically scales B-roll to frame dimensions, trims B-roll to 4s overlays,
-        and ducked background music to exact video length.
-
-        Args:
-            screencast_path: Path to the original video file.
-            broll_clips: List of dicts with 'path' and 'start_sec'.
-            music_path: Path to the background music file.
-            output_xml_path: Destination path for the .xml file.
-            fps: Frame rate (default 30).
-            width: Frame width (default 1280).
-            height: Frame height (default 720).
-            total_frames: Total duration in frames.
-            broll_duration_sec: Duration per B-roll overlay (default 4.0s).
-            music_level: Music volume multiplier (default 0.022 ~ -18 dB).
+        Builds a complete, 100% compliant 6-track Adobe Premiere Pro FCPXML timeline in one shot:
+        - V1: Screencast with 100%/115% punch-in zoom segments.
+        - V2: B-Roll video overlays (trimmed to 4s, scaled to frame).
+        - V3: 2D graphic callout cards (transparent PNG overlays).
+        - A1: Original screencast audio (voiceover).
+        - A2: Curated background music (-18 dB ducked, auto-trimmed).
+        - A3: Transition whoosh SFX on each cutaway (-14 dB ducked).
 
         Returns:
             The absolute path of the generated XML file.
@@ -48,5 +43,8 @@ def register_timeline_tools(mcp):
             height=height,
             total_frames=total_frames,
             broll_duration_sec=broll_duration_sec,
-            music_level=music_level
+            music_level=music_level,
+            graphic_cards=graphic_cards,
+            sfx_path=sfx_path,
+            punch_ins=punch_ins
         )

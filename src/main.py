@@ -8,6 +8,8 @@ from mcp.server.mcpserver import MCPServer
 from src.pexels_broll.mcp_tool import register_tools
 from src.background_music.mcp_tool import register_bg_music_tools
 from src.timeline.mcp_tool import register_timeline_tools
+from src.sound_design.mcp_tool import register_sound_design_tools
+from src.graphics.mcp_tool import register_graphics_tools
 
 # 1. Create an MCPServer instance (Transport/Entry Layer)
 mcp = MCPServer("PexelsBrollServer")
@@ -16,6 +18,8 @@ mcp = MCPServer("PexelsBrollServer")
 register_tools(mcp)
 register_bg_music_tools(mcp)
 register_timeline_tools(mcp)
+register_sound_design_tools(mcp)
+register_graphics_tools(mcp)
 
 if __name__ == "__main__":
     # Start the server
