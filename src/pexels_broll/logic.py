@@ -16,7 +16,7 @@ def download_pexels_broll(keyword: str, output_dir: str, api_key: str) -> str:
     params = {
         "query": keyword,
         "orientation": "landscape",
-        "size": "hd",
+        "size": "medium",
         "per_page": 1  # We only need the first result
     }
 
@@ -37,8 +37,20 @@ def download_pexels_broll(keyword: str, output_dir: str, api_key: str) -> str:
     if not mp4_files:
         raise RuntimeError(f"No MP4 files found for the video matching keyword: '{keyword}'")
 
-    # Sort by highest resolution (width * height)
-    mp4_files.sort(key=lambda x: x.get("width", 0) * x.get("height", 0), reverse=True)
+    # Target sequence resolution (720p/1080p) to avoid downloading massive 4K UHD files
+    def resolution_score(f):
+        h = f.get("height") or 0
+        # Rank 0: Ideal sequence match (720p to 1080p), closest to 720p first
+        if 720 <= h <= 1080:
+            return (0, abs(h - 720))
+        # Rank 1: 4K / UHD (penalized to save bandwidth and download time)
+        elif h > 1080:
+            return (1, h)
+        # Rank 2: Low-res / SD (< 720p)
+        else:
+            return (2, -h)
+
+    mp4_files.sort(key=resolution_score)
     best_file = mp4_files[0]
     download_link = best_file.get("link")
 
